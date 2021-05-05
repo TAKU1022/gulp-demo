@@ -11,6 +11,7 @@
     "gulp": "^4.0.2",
     "gulp-dart-sass": "^1.0.2",
     "gulp-postcss": "^9.0.0",
+    "gulp-rimraf": "^1.0.0",
     "postcss-flexbugs-fixes": "^4.2.1"
   },
   "scripts": {
