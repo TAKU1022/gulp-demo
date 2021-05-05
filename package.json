@@ -5,7 +5,13 @@
   "main": "index.js",
   "dependencies": {},
   "devDependencies": {
-    "gulp": "^4.0.2"
+    "autoprefixer": "^9.8.6",
+    "css-declaration-sorter": "^5.1.2",
+    "csswring": "^7.0.0",
+    "gulp": "^4.0.2",
+    "gulp-dart-sass": "^1.0.2",
+    "gulp-postcss": "^9.0.0",
+    "postcss-flexbugs-fixes": "^4.2.1"
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
