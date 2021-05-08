@@ -27,7 +27,7 @@ const compileSass = () => {
         cssWring,
       ])
     )
-    .pipe(dest('./src/dist/assets/css/', { sourcemaps: '.' }))
+    .pipe(dest('./src/css/', { sourcemaps: '.' }))
     .pipe(browserSync.stream()); //修正部分のみがwatchの際に反映
 };
 
@@ -53,7 +53,7 @@ const server = () => {
 };
 
 const deleteDist = (cb) => {
-  rimraf('./dist', cb);
+  rimraf('./src/css', cb);
 };
 const build = parallel(deleteDist, parallel(compileSass));
 
