@@ -13,8 +13,11 @@ const declarationSorter = require('css-declaration-sorter'); //CSSのプロパ�
 const cssWring = require('csswring'); //CSSの圧縮
 const rimraf = require('gulp-rimraf'); //ファイル削除
 const browserSync = require('browser-sync').create(); //localhostサーバーを立ち上げ
+const webpack = require('webpack');
+const webpackStream = require('webpack-stream');
+const webpackConfig = require('./webpack.config');
 
-const paths = { scss: './src/scss/**/*.scss' }; //パスの指定
+const paths = { scss: './src/scss/**/*.scss', js: './src/js/**/*.js' }; //パスの指定
 //cssタスクの登録
 const compileSass = () => {
   return src(paths.scss, { sourcemaps: true })
@@ -31,10 +34,19 @@ const compileSass = () => {
     .pipe(browserSync.stream()); //修正部分のみがwatchの際に反映
 };
 
+// jsタスクの登録
+const transpileJs = () => {
+  return webpackStream(webpackConfig, webpack).pipe(dest('./dist/js/'));
+};
+
 //watchタスクの登録
 const watchFiles = () => {
   watch(paths.scss, (cb) => {
     compileSass();
+    cb();
+  });
+  watch(paths.js, (cb) => {
+    transpileJs();
     cb();
   });
   watch('./src/**/*.html', (cb) => {
@@ -55,10 +67,11 @@ const server = () => {
 const deleteDist = (cb) => {
   rimraf('./src/css', cb);
 };
-const build = parallel(deleteDist, parallel(compileSass));
+const build = parallel(deleteDist, parallel(compileSass, transpileJs));
 
 //タスクの宣言
 exports.css = compileSass();
+exports.js = transpileJs();
 exports.watchFiles = watchFiles();
 exports.build = build;
 exports.default = series(parallel(server, watchFiles));

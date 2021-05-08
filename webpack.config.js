@@ -6,6 +6,7 @@ module.exports = {
   entry: './src/js/main.js',
   // トランスパイル後のファイル書き出し
   output: {
+    path: path.join(__dirname, 'dist/js'),
     filename: 'main.js',
   },
 
