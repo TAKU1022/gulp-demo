@@ -17,7 +17,18 @@ const webpack = require('webpack');
 const webpackStream = require('webpack-stream');
 const webpackConfig = require('./webpack.config');
 
-const paths = { scss: './src/scss/**/*.scss', js: './src/js/**/*.js' }; //パスの指定
+//パスの指定
+const paths = {
+  html: './src/**/*.html',
+  scss: './src/scss/**/*.scss',
+  js: './src/js/**/*.js',
+};
+
+//htmlタスクの登録
+const copyHtml = () => {
+  return src(paths.html).pipe(dest('./dist')).pipe(browserSync.stream());
+};
+
 //cssタスクの登録
 const compileSass = () => {
   return src(paths.scss, { sourcemaps: true })
@@ -30,7 +41,7 @@ const compileSass = () => {
         cssWring,
       ])
     )
-    .pipe(dest('./src/css/', { sourcemaps: '.' }))
+    .pipe(dest('./dist/css/', { sourcemaps: '.' }))
     .pipe(browserSync.stream()); //修正部分のみがwatchの際に反映
 };
 
@@ -41,6 +52,10 @@ const transpileJs = () => {
 
 //watchタスクの登録
 const watchFiles = () => {
+  watch(paths.html, (cb) => {
+    copyHtml();
+    cb();
+  });
   watch(paths.scss, (cb) => {
     compileSass();
     cb();
@@ -57,19 +72,14 @@ const watchFiles = () => {
 
 const server = () => {
   browserSync.init({
-    server: {
-      baseDir: 'src',
-      index: 'index.html',
-    },
+    server: './dist',
   });
 };
 
-const deleteDist = (cb) => {
-  rimraf('./src/css', cb);
-};
-const build = parallel(deleteDist, parallel(compileSass, transpileJs));
+const build = parallel(copyHtml, compileSass, transpileJs);
 
 //タスクの宣言
+exports.html = copyHtml();
 exports.css = compileSass();
 exports.js = transpileJs();
 exports.watchFiles = watchFiles();
