@@ -30,6 +30,6 @@ module.exports = {
       },
     ],
   },
-  // ES5(IE11等)向けの指定
+  // ES5(IE11等)向けの指定（webpack 5以上で必要）
   target: ['web', 'es5'],
 };
